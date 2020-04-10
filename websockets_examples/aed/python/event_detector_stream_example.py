@@ -9,13 +9,11 @@ import wave
 
 # 0. Define paths
 
-wav_path = "../../../wav/aed"
 websocket_url = "ws://0.0.0.0:8080"
-rest_url = "http://0.0.0.0:8080"
 
 # 1. Read test audio file
 
-with wave.open(os.path.join(wav_path, "cough_0.wav"), "rb") as wav:
+with wave.open("cough_0.wav", "rb") as wav:
     samples = np.frombuffer(wav.readframes(wav.getnframes()), dtype=np.int16)
     sample_rate = wav.getframerate()
 

@@ -9,12 +9,11 @@ import wave
 
 # 0. Define paths
 
-wav_path = "../../../wav/media"
 websocket_url = "ws://0.0.0.0:8080"
 
 # 1. Read test audio file
 
-with wave.open(os.path.join(wav_path, "genuine.wav"), "rb") as wav:
+with wave.open("genuine.wav", "rb") as wav:
     samples = np.frombuffer(wav.readframes(wav.getnframes()), dtype=np.int16)
     sample_rate = wav.getframerate()
 

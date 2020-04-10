@@ -9,17 +9,16 @@ import wave
 
 # 0. Define paths
 
-wav_path = "../../../wav/verify"
 websocket_url = "ws://0.0.0.0:8080"
 rest_url = "http://0.0.0.0:8080"
 
 # 1. Read test audio files
 
-with wave.open(os.path.join(wav_path, "m001_01_001.wav"), "rb") as wav:
+with wave.open("m001_01_001.wav", "rb") as wav:
     samples1 = np.frombuffer(wav.readframes(wav.getnframes()), dtype=np.int16)
     sample_rate1 = wav.getframerate()
 
-with wave.open(os.path.join(wav_path, "m001_02_001.wav"), "rb") as wav:
+with wave.open("m001_02_001.wav", "rb") as wav:
     samples2 = np.frombuffer(wav.readframes(wav.getnframes()), dtype=np.int16)
     sample_rate2 = wav.getframerate()
 
