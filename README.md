@@ -193,4 +193,4 @@ An array of JSON representations of VerifyStreamResult class instance.
 [{"audio_interval": {"end_sample": 48000, "end_time": 3000, "sample_rate": 16000, "start_sample": 0, "start_time": 0}, "verify_result": {"probability": 0.9999368786811829, "score": 0.6484680771827698}}]
 ```
 
-Also take a look at Python and JavaScript examples for WebSocket API at [this repository](https://github.com/IDRnD/voicesdk-rest-ws-examples/websockets_examples).
+Also take a look at Python and JavaScript examples for WebSocket API at [this repository](https://github.com/IDRnD/voicesdk-rest-ws-examples/tree/master/websockets_examples).
