@@ -142,7 +142,7 @@ The common order of working with WebSocket endpoints is the following:
 
 ### Endpoints documentation 
 
-# `/event_detector_stream`
+#### `/event_detector_stream`
 
 **Parameters:**
 
@@ -156,7 +156,7 @@ An array with JSON representations of Event class instance.
 [{"audio_interval": {"end_sample": 24150, "end_time": 3018, "sample_rate": 8000, "start_sample": 0, "start_time": 0}, "event_type": "Cough", "probability": 0.9999734163284302}]
 ```
 
-# `/speech_endpoint_detector`
+#### `/speech_endpoint_detector`
 
 1. Minimum speech length required to start endpoint detection (milliseconds).
 2. Silence after utterance length required to detect speech endpoint (milliseconds).
@@ -166,7 +166,7 @@ An array with JSON representations of Event class instance.
 
 A string representation of boolean value, "true" if speech endpoint is detected, "false" otherwise.
 
-# `/speech_summary_stream`
+#### `/speech_summary_stream`
 
 1. Input audio stream sampling rate.
 
@@ -178,7 +178,7 @@ A JSON representation of SpeechSummary class instance.
 {"current_background_length": 0.0, "speech_length": 0.029999999329447746, "current_speech_summary": {"background_length": 0.33000001311302185, "speech_signal_length": 0.029999999329447746, "total_length": 0.38331249356269836, "vad_result": {"frame_length_ms": 30.0, "frames": [false, false, false, false, false, false, false, false, false, false, false, true]}}}
 ```
 
-# `/verify_stream`
+#### `/verify_stream`
 
 1. Base64 string representation of voice template created with one of the methods from `/verify_engine/*` endpoint.
 2. Input audio stream sampling rate.
