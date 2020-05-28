@@ -1,15 +1,164 @@
-ID R&D VoiceSDK WebSocket and REST API examples
-===============================================
+ID R&D VoiceSDK REST server
+===========================
 
-This repository hosts documentation and examples for VoiceSDK WebSocket and REST API. Also please
+This package hosts Docker image with thin REST and WS wrapper for all VoiceSDK components.
+REST wrapper conforms VoiceSDK Python API (all the methods and result classes). Please
 take a look at [Python API documentation](https://docs.idrnd.net/voice/python) for better 
 understanding the present API semantics.
+
+Installation: Local package
+---------------------------
+
+This type of installation is applicable if you were provided with tar
+archive of ready-to-use docker image.
+
+1. Make sure you have Docker CE/EE installed  
+   ```bash
+   $ apt-get install docker.io
+   ```
+   
+2. Load image into docker directly  
+   ```bash
+   $ docker load -i voicesdk-server.tar.gz
+   Loaded image: voicesdk-server:tag
+   ```
+   
+3. Launch resulting image
+   ```bash
+   $ docker run -d --name vrs --publish 8080:8080 voicesdk-server:tag
+   ```
+
+Installation: Amazon ECR
+------------------------
+
+This type of installation is applicable if you received AWS API key and secret
+from ID R&D.
+
+1. Make sure you have Python and Docker CE/EE installed  
+   ```bash
+   $ apt-get install docker.io python3-pip
+   ```
+   
+2. Download AWS CLI  
+   ```bash
+   $ pip3 install awscli
+   ```
+   
+3. Configure your credentials as provided by ID R&D  
+    ```bash
+    $ aws configure
+    AWS Access Key ID None: <YOUR_API_KEY>
+    AWS Secret Access Key None: <YOUR_SECRET_API_KEY>
+    Default region name None: eu-central-1
+    Default output format None: <None>
+    ```
+    
+4. Login to Docker registry  
+   ```bash
+   $ eval $(aws ecr get-login --no-include-email)
+   ```
+   
+5. Pull VoiceSDK server image  
+   ```bash
+   $ docker pull 367672406076.dkr.ecr.eu-central-1.amazonaws.com/voicesdk/voicesdk-server:2.14
+   $ docker tag 367672406076.dkr.ecr.eu-central-1.amazonaws.com/voicesdk/voicesdk-server:2.14 voicesdk-server:2.14
+   ```
+
+6. Launch image  
+   ```bash
+   $ docker run -d --name vrss --publish 8080:8080 voicesdk-server:2.14
+   ```
+
+Configuration
+-------------
+
+There are two options to configure the container:
+
+* via environment variables
+* via passing a valid `application-config.yml` file
+
+This documentation describes only the environment variables configuration option in details since the variables in config file are pretty much the same.
+The valid default configuration file for user-defined changes can be downloaded from the [ID R&D GitHub repository](https://github.com/IDRnD/voicesdk-rest-ws-examples/tree/master/config/application-config.yml) 
+
+### VoiceSDK component set
+
+VoiceSDK contains various components, which solve different tasks. Some of them are rarely used along with each other.
+You can configure the set of server components to use. This helps to decrease memory usage and remove unnecessary API endpoints.
+Enabling/disabling a specific component is possible via a boolean environment variable ``IDRND_VOICESDK_COMPONENTS_<COMPONENT>``:
+
+```bash
+$ docker run -d --name vrss --publish 8080:8080 \
+             -e IDRND_VOICESDK_COMPONENTS_<COMPONENT>=true|false
+             voicesdk-server:2.14 
+``` 
+
+The table below shows the list of variables to configure VoiceSDK component set.
+
+| Variable name | Description |
+| ---- | --- |
+| IDRND_VOICESDK_COMPONENTS_ANTISPOOF | Voice anti-spoofing |
+| IDRND_VOICESDK_COMPONENTS_VERIFY | Voice verification |
+| IDRND_VOICESDK_COMPONENTS_MEDIA | Speech and signal processing utilities |
+| IDRND_VOICESDK_COMPONENTS_DIARIZATION | Speaker diarization |
+| IDRND_VOICESDK_COMPONENTS_AED | Acoustic event detection |
+| IDRND_VOICESDK_COMPONENTS_ATTRIBUTES | Speaker attributes estimation |
+
+All the components are enabled by default.
+
+### Voice verification component
+
+VoiceSDK voice verification component is delivered with a set of configurations covering
+the most common use-cases and scenarios.
+You can configure voice verification engine for a specific scenario by passing initialization data subfolder and voice verification method via environment
+variables like this:
+
+```bash
+$ docker run -d --name vrss --publish 8080:8080 \
+             -e IDRND_VOICESDK_VERIFY_VERIFY_METHODS="MAP,TI_X_2" \
+             -e IDRND_VOICESDK_VERIFY_INIT_DATA="verify/verify_init_data_16k" \
+             voicesdk-server:2.14 
+```
+
+**Available values for IDRND_VOICESDK_VERIFY_VERIFY_METHODS:**
+* **MAP** - GMM-MAP verification method (intended to be used for text-dependent scenario)
+* **TI_X** - x-vector verification method (intended to be used for text-independent scenario), can be used only along with 8k init data
+* **TI_X_2** - new generation x-vector verification method (intended to be used for text-independent scenario)
+* any combination (list) of these three methods passed as comma separated list
+
+**Available values for IDRND_VOICESDK_VERIFY_INIT_DATA:**
+* **verify/verify_init_data_8k** - init data for telephone channel or cross-channel (microphone-telephone) speaker verification
+* **verify/verify_init_data_16k** - init data for microphone channel speaker verification
+
+**Recommended configurations:**
+
+| IDRND_VOICESDK_VERIFY_VERIFY_METHODS | IDRND_VOICESDK_VERIFY_INIT_DATA | Use-case |
+| ---- | --- | --- |
+| TI_X_2 | verify/verify_init_data_16k | **Text-independent** speaker verification in **microphone** channel |
+| TI_X_2 and MAP ("TI_X_2,MAP") | verify/verify_init_data_16k | **Text-dependent** speaker verification in **microphone** channel |
+| TI_X_2 or TI_X | verify/verify_init_data_8k | **Text-independent** speaker verification in **telephone** channel |
+| TI_X_2 | verify/verify_init_data_8k | **Cross-channel** **text-independent** speaker verification |
+
+The default configuration is text-independent speaker verification in microphone channel.
+
+### Enabling CORS
+
+In some cases Cross-Origin Resource Sharing is required (e.g. when client-side JavaScript interacts with the server placed on a different host/port).
+It is not safe and is not recommended to use the option in production, but for debugging  purposes you can enable CORS by
+passing `SERVER_ALLOW_CORS` environment variable on the container initialization:
+
+```bash
+$ docker run -d --name vrss --publish 8080:8080 \
+             -e SERVER_ALLOW_CORS=true \
+             voicesdk-server:2.14 
+```
+
+CORS is disabled by default.
 
 REST API Usage
 --------------
 
 The docker image itself exposes port 8080 which is used for communicating with
-underlying REST service. The service has `/swagger-ui/` endpoint
+underlying REST service. The service has `/swagger-ui.html` endpoint
 where you can find documentation for endpoints and examples of all operations.
 
 Note that the set of available methods is defined by the set of components which are presented
@@ -27,8 +176,8 @@ Make sure you have `curl`, `jq` and `jo` utilities installed.
 
 * Verification
   ```bash
-  $ voice_template1=$(curl -s --form wav_file=@examples/wav/verify/m001_01_001.wav -X POST localhost:8080/verify_engine/create_voice_template_from_file | jq -r)
-  $ voice_template2=$(curl -s --form wav_file=@examples/wav/verify/m001_02_001.wav -X POST localhost:8080/verify_engine/create_voice_template_from_file | jq -r)
+  $ voice_template1=$(curl -s --form wav_file=@examples/wav/verify/m001_01_001.wav -X POST localhost:8080/verify_engine/create_voice_template_from_file)
+  $ voice_template2=$(curl -s --form wav_file=@examples/wav/verify/m001_02_001.wav -X POST localhost:8080/verify_engine/create_voice_template_from_file)
   $ curl -H 'Content-Type: application/json' --data $(jo template1=$voice_template1 template2=$voice_template1) -X POST localhost:8080/verify_engine/verify
   {"probability":1.0,"score":0.9999996423721313}
   ```
@@ -193,4 +342,4 @@ An array of JSON representations of VerifyStreamResult class instance.
 [{"audio_interval": {"end_sample": 48000, "end_time": 3000, "sample_rate": 16000, "start_sample": 0, "start_time": 0}, "verify_result": {"probability": 0.9999368786811829, "score": 0.6484680771827698}}]
 ```
 
-Also take a look at Python and JavaScript examples for WebSocket API at [this repository](https://github.com/IDRnD/voicesdk-rest-ws-examples/tree/master/websockets_examples).
+Also take a look at Python and JavaScript examples for WebSocket API at [ID R&D GitHub repository](https://github.com/IDRnD/voicesdk-rest-ws-examples).

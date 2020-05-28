@@ -71,15 +71,9 @@ function collectAudioBuffer(floatAudioBuffer) {
       }
     };
 
-    // 5. Encode recorded data in base64 and send it to REST API
-    // (probably not the most efficient way to do it)
+    // 5. Send recorded data to REST API
     let blob = new Blob([view]);
-    var reader = new FileReader();
-    reader.readAsDataURL(blob);
-    reader.onloadend = function() {
-      var base64data = reader.result.replace("data:application/octet-stream;base64,", "");
-      req.send(base64data);
-    }
+    req.send(blob);
 
     buffersCollected = [];
   }

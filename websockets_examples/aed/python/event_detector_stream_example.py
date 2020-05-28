@@ -3,7 +3,6 @@ import os
 import numpy as np
 import sys
 import requests
-import base64
 import json
 import wave
 

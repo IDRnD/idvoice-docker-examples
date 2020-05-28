@@ -3,7 +3,6 @@ import os
 import numpy as np
 import sys
 import requests
-import base64
 import json
 import wave
 
@@ -26,7 +25,7 @@ with wave.open("m001_02_001.wav", "rb") as wav:
 
 r = requests.post(
     rest_url + "/verify_engine/create_voice_template_from_samples?sample_rate=%i" % sample_rate1,
-    data=base64.b64encode(samples1.tostring()),
+    data=samples1.tostring(),
     headers={"Content-type": "application/octet-stream"}
 )
 
