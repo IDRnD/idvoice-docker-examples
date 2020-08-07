@@ -24,7 +24,7 @@ with wave.open("m001_02_001.wav", "rb") as wav:
 # 2. Create voice template
 
 r = requests.post(
-    rest_url + "/verify_engine/create_voice_template_from_samples?sample_rate=%i" % sample_rate1,
+    rest_url + "/voice_template_factory/create_voice_template_from_samples?sample_rate=%i" % sample_rate1,
     data=samples1.tostring(),
     headers={"Content-type": "application/octet-stream"}
 )
@@ -35,7 +35,7 @@ voice_template = r.text
 
 # 3. Establish connection
 
-ws = websocket.create_connection(websocket_url + "/verify_stream")
+ws = websocket.create_connection(websocket_url + "/voice_verify_stream")
 
 # 3.1. First stream constructor parameter - voice template to compare with
 

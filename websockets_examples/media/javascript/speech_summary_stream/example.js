@@ -50,10 +50,10 @@ function startRecording() {
               // if it is not empty
               let result = JSON.parse(e.data);
 
-              if (result["current_speech_summary"]) {
-                // "vad_result" if voice activity detection (VAD) mask, printing it
+              if (result["speech_events"]) {
+                // "speech_events" contains voice activity detection results, printing it
                 // does not make sense in this case
-                delete result["current_speech_summary"]["vad_result"];
+                delete result["speech_events"];
 
                 element.value += JSON.stringify(result) + "\n";
                 element.scrollTop = element.scrollHeight;

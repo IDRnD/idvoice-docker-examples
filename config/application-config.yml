@@ -12,8 +12,7 @@ idrnd:
       media: true
       attributes: true
     verify:
-      init-data: "verify/verify_init_data_16k"
-      # init-data: "verify/verify_init_data_8k"
-      verify-methods: "TI_X_2"
-      # verify-method: "TI_X_2, MAP"
-      # verify-method: "TI_X"
+      init-data: "verify/TI-mic"
+      #init-data: "verify/TI-tel"
+      #init-data: "verify/TD-mic"
+      #init-data: "verify/TI-universal"

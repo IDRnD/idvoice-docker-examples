@@ -3,8 +3,8 @@ let element = document.getElementById("output");
 let element1 = document.getElementById("output1");
 
 // REST API and WebSocket API endpoints
-let restBackendUrl = "http://0.0.0.0:8080/verify_engine/create_voice_template_from_samples"
-let wsBackendUrl = "ws://0.0.0.0:8080/verify_stream";
+let restBackendUrl = "http://0.0.0.0:8080/voice_template_factory/create_voice_template_from_samples"
+let wsBackendUrl = "ws://0.0.0.0:8080/voice_verify_stream";
 
 // WebSocket object, will be initialized later
 var socket;
