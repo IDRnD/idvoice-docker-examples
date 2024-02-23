@@ -49,9 +49,16 @@ ws.send(str(sample_rate2))
 result_code = ws.recv()
 print("Setting verify stream sample rate: ", result_code)
 
-# 3.3. Third stream constructor parameter - windows length
+# 3.3. Third stream constructor parameter - audio context length
 
-stream_window_length_seconds = 10
+stream_audio_context_length_seconds = 10
+ws.send(str(stream_audio_context_length_seconds))
+result_code = ws.recv()
+print("Setting verify stream audio context length seconds: ", result_code)
+
+# 3.4. Third stream constructor parameter - window length
+
+stream_window_length_seconds = 3
 ws.send(str(stream_window_length_seconds))
 result_code = ws.recv()
 print("Setting verify stream window length seconds: ", result_code)

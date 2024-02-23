@@ -12,6 +12,7 @@ var socket;
 // Voice verification parameters
 let requiredEnrollmentAudioLengthSeconds = 5;
 var requiredEnrollmentAudioLengthSamples;
+let verifyStreamContextLengthSeconds = 10;
 let verifyStreamWindowLengthSeconds = 3;
 
 // Audio recording stuff
@@ -156,7 +157,9 @@ function startRecording(enrollVoiceTemplate) {
             socket.send(enrollVoiceTemplate);
             // The second parameter - audio stream sampling rate
             socket.send(sampleRate.toString());
-            // The third parameter - verification sliding window width
+            // The third parameter - audio context length
+            socket.send(verifyStreamContextLengthSeconds.toString());
+            // The fourth parameter - verification sliding window width
             socket.send(verifyStreamWindowLengthSeconds.toString());
           };
 
