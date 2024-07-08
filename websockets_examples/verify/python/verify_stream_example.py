@@ -14,12 +14,20 @@ rest_url = "http://0.0.0.0:8080"
 # 1. Read test audio files
 
 with wave.open("m001_01_001.wav", "rb") as wav:
-    samples1 = np.frombuffer(wav.readframes(wav.getnframes()), dtype=np.int16)
+    n_channels = wav.getnchannels()
+    n_frames = wav.getnframes()
     sample_rate1 = wav.getframerate()
+    audio_data = np.frombuffer(wav.readframes(n_frames), dtype=np.int16)
+    audio_data = audio_data.reshape(-1, n_channels)
+    samples1 = audio_data.mean(axis=1).astype(np.int16)
 
 with wave.open("m001_02_001.wav", "rb") as wav:
-    samples2 = np.frombuffer(wav.readframes(wav.getnframes()), dtype=np.int16)
+    n_channels = wav.getnchannels()
+    n_frames = wav.getnframes()
     sample_rate2 = wav.getframerate()
+    audio_data = np.frombuffer(wav.readframes(n_frames), dtype=np.int16)
+    audio_data = audio_data.reshape(-1, n_channels)
+    samples2 = audio_data.mean(axis=1).astype(np.int16)
 
 # 2. Create voice template
 

@@ -13,8 +13,12 @@ websocket_url = "ws://0.0.0.0:8080"
 # 1. Read test audio file
 
 with wave.open("genuine.wav", "rb") as wav:
-    samples = np.frombuffer(wav.readframes(wav.getnframes()), dtype=np.int16)
+    n_channels = wav.getnchannels()
+    n_frames = wav.getnframes()
     sample_rate = wav.getframerate()
+    audio_data = np.frombuffer(wav.readframes(n_frames), dtype=np.int16)
+    audio_data = audio_data.reshape(-1, n_channels)
+    samples = audio_data.mean(axis=1).astype(np.int16)
 
 # 2. Establish connection
 
